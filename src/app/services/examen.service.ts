@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ExamenService {
-  private apiUrl = 'http://localhost:41272/api';
+  private apiUrl = 'https://pruebaback-fwaeawc0ckd9g6dh.westus2-01.azurewebsites.net/api';
 
   constructor(private http: HttpClient) {}
 
