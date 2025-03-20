@@ -6,11 +6,23 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ExamenService {
-  private apiUrl = 'http://localhost:5000/api/examen';
+  private apiUrl = 'http://localhost:41272/api';
 
   constructor(private http: HttpClient) {}
 
-  enviarExamen(data: any): Observable<any> {
-    return this.http.post(this.apiUrl, data);
+  enviarPuntaje(nombre: string, puntaje: number): Observable<any> {
+    return this.http.post(this.apiUrl + '/examen/guardar-examen', { nombre, puntaje });
+
   }
+  consultarPreguntas(Usuario: string,NombreExamen: string): Observable<any> {
+    return this.http.post(this.apiUrl +'/examen/consultar-preguntas',{Usuario,NombreExamen});
+  }
+
+  consultarOpciones(Usuario: String): Observable<any> {
+    return this.http.post(this.apiUrl +'/examen/consultar-opciones',{Usuario});
+  }
+  
+  
 }
+
+
