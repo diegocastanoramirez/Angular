@@ -6,7 +6,7 @@
     "start": "ng build --output-path=dist && node server.js",
     "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "postinstall": "ng build --configuration production"
+    "postinstall": "npm ci && ng build --configuration production"
   },
   "private": true,
   "dependencies": {
