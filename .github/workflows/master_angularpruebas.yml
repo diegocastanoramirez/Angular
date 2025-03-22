@@ -31,19 +31,20 @@ jobs:
         run: node --max-old-space-size=2048 node_modules/@angular/cli/bin/ng build --configuration production
 
       - name: Check build output
-        run: ls -la dist/browser
+        run: ls -la dist/
 
-      - name: Create deployment package
+      - name: Zip artifact for deployment
         run: |
           cd dist
-          tar -cvf ../release.tar browser
+          ZIP_FOLDER=$(ls)  # Obtiene el nombre de la carpeta dentro de dist
+          zip -r ../release.zip "$ZIP_FOLDER"
           cd ..
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: release.tar
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-20.04
@@ -61,10 +62,9 @@ jobs:
         with:
           name: node-app
 
-      - name: Extract artifact for deployment
-        run: |
-          mkdir -p wwwroot  # ✅ Crea la carpeta si no existe
-          tar -xvf release.tar -C wwwroot
+      - name: Unzip artifact for deployment
+        run: unzip release.zip -d wwwroot
+
 
       - name: Login to Azure
         uses: azure/login@v2
