@@ -58,8 +58,14 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      - name: Install Angular CLI globally
+        run: npm install -g @angular/cli
+
       - name: Install dependencies on Azure
-        run: npm install --production
+        run: npm install --omit=dev
+
+      - name: Run postinstall manually
+        run: npm run postinstall
 
       - name: Login to Azure
         uses: azure/login@v2
