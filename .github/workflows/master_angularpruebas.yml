@@ -21,22 +21,23 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
-
       - name: Install Angular CLI globally
         run: npm install -g @angular/cli
 
-      - name: Verify Angular CLI installation
-        run: ng version
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
 
       - name: Build Angular project
         run: node --max-old-space-size=2048 node_modules/@angular/cli/bin/ng build --configuration production
 
+      - name: Check build output
+        run: ls -la dist/
+
       - name: Zip artifact for deployment
         run: |
           cd dist
-          zip -r ../release.zip angularPruebas
+          ZIP_FOLDER=$(ls)  # Obtiene el nombre de la carpeta dentro de dist
+          zip -r ../release.zip "$ZIP_FOLDER"
           cd ..
 
       - name: Upload artifact for deployment job
