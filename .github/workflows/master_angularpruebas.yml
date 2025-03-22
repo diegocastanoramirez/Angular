@@ -31,7 +31,7 @@ jobs:
         run: npm run build --if-present
 
       - name: Zip artifact for deployment
-        run: zip -r release.zip ./dist/project-angular
+        run: zip -r release.zip ./dist/project-angular package.json package-lock.json angular.json .npmrc
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -58,6 +58,9 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      - name: Install dependencies on Azure
+        run: npm install --production
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -71,4 +74,4 @@ jobs:
         with:
           app-name: 'angularPruebas'
           slot-name: 'Production'
-          package: dist/project-angular
+          package: .
