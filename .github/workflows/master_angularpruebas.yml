@@ -34,11 +34,11 @@ jobs:
         run: ls -la dist/
 
       - name: Zip artifact for deployment
-        run: |
-          cd dist
-          ZIP_FOLDER=$(ls)  # Obtiene el nombre de la carpeta dentro de dist
-          zip -r ../release.zip "$ZIP_FOLDER"
-          cd ..
+run: |
+  cd dist
+  zip -r ../release.zip browser
+  cd ..
+
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
