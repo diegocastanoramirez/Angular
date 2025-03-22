@@ -31,15 +31,15 @@ jobs:
         run: node --max-old-space-size=2048 node_modules/@angular/cli/bin/ng build --configuration production
 
       - name: Check build output
-        run: ls -la dist/app-name  # ✅ Verifica la estructura correcta
+        run: ls -la dist/app-name/browser
 
-      - name: Zip artifact for deployment
+      - name: Create deployment package
         run: |
-          cd dist
-          zip -r ../release.zip app-name  # ✅ Empaqueta la carpeta app-name
-          cd ..
+          cd dist/app-name
+          zip -r ../../release.zip ./*
+          cd ../..
 
-      - name: Check contents of release.zip  # ✅ Asegura que el zip contiene los archivos esperados
+      - name: Check ZIP contents
         run: unzip -l release.zip
 
       - name: Upload artifact for deployment job
@@ -63,24 +63,25 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
+          path: .
+
+      - name: Check downloaded ZIP contents
+        run: unzip -l release.zip
 
       - name: Unzip artifact for deployment
-        run: unzip release.zip -d wwwroot
-
-      - name: Move files to correct location  # ✅ Mueve los archivos de app-name/ a wwwroot/
         run: |
-          mv wwwroot/app-name/* wwwroot/
-          rm -rf wwwroot/app-name
+          mkdir -p wwwroot
+          unzip release.zip -d wwwroot
 
-      - name: Check extracted files  # ✅ Verifica que los archivos están correctamente ubicados
-        run: ls -la wwwroot/
+      - name: Verify extracted files
+        run: ls -la wwwroot/app-name/browser
 
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_AFB519C629524D4BAB728ADB01B50F62 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_791D1D7F86F048DB9AE3C85975232D19 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_16D45923A80A4652B527F54328251700 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
