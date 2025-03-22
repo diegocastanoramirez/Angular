@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     permissions:
       contents: read
 
@@ -22,10 +22,10 @@ jobs:
           node-version: '18.x'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Build Angular project
-        run: npm run build 
+        run: ng build --configuration production --max-old-space-size=2048
 
       - name: Zip artifact for deployment
         run: |
@@ -40,7 +40,7 @@ jobs:
           path: release.zip
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: build
     environment:
       name: 'Production'
@@ -69,4 +69,3 @@ jobs:
         with:
           app-name: 'angularPruebas'
           package: wwwroot
-
