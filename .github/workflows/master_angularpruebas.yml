@@ -32,7 +32,7 @@ jobs:
         run: node --max-old-space-size=2048 node_modules/@angular/cli/bin/ng build --configuration production
 
       - name: Check build output
-        run: ls -la dist/browser
+        run: ls -la dist
 
       - name: Zip artifact for deployment
         run: |
