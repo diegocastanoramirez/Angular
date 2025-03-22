@@ -24,8 +24,14 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Install Angular CLI globally
+        run: npm install -g @angular/cli
+
+      - name: Verify Angular CLI installation
+        run: ng version
+
       - name: Build Angular project
-        run: ng build --configuration production --max-old-space-size=2048
+        run: node --max-old-space-size=2048 node_modules/@angular/cli/bin/ng build --configuration production
 
       - name: Zip artifact for deployment
         run: |
