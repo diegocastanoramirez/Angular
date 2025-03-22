@@ -30,8 +30,8 @@ jobs:
       - name: Build Angular project
         run: node --max-old-space-size=2048 node_modules/@angular/cli/bin/ng build --configuration production
 
-      - name: Check build output
-        run: ls -la dist/app-name/browser
+      - name: Revisar contenido de dist/app-name antes de comprimir
+        run: ls -la dist/app-name/
 
       - name: Create deployment package
         run: |
@@ -39,7 +39,7 @@ jobs:
           zip -r ../../release.zip ./*
           cd ../..
 
-      - name: Check ZIP contents
+      - name: Revisar contenido del ZIP antes de subirlo
         run: unzip -l release.zip
 
       - name: Upload artifact for deployment job
@@ -65,17 +65,16 @@ jobs:
           name: node-app
           path: .
 
-      - name: Check downloaded ZIP contents
+      - name: Revisar contenido del ZIP después de descargarlo
         run: unzip -l release.zip
 
-      - name: Ensure deployment directory exists
-        run: mkdir -p wwwroot
+      - name: Crear carpeta y extraer archivos correctamente
+        run: |
+          mkdir -p wwwroot/app-name
+          unzip -o release.zip -d wwwroot/app-name/
 
-      - name: Unzip artifact for deployment
-        run: unzip release.zip -d wwwroot
-
-      - name: Verify extracted files
-        run: ls -la wwwroot/app-name/browser
+      - name: Verificar estructura después de extraer
+        run: ls -la wwwroot/app-name/
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -89,4 +88,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'angularPruebas'
-          package: wwwroot
+          package: wwwroot/app-name
