@@ -62,7 +62,9 @@ jobs:
           name: node-app
 
       - name: Extract artifact for deployment
-        run: tar -xvf release.tar -C wwwroot
+        run: |
+          mkdir -p wwwroot  # ✅ Crea la carpeta si no existe
+          tar -xvf release.tar -C wwwroot
 
       - name: Login to Azure
         uses: azure/login@v2
