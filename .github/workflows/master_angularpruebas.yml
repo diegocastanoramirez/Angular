@@ -31,14 +31,16 @@ jobs:
         run: node --max-old-space-size=2048 node_modules/@angular/cli/bin/ng build --configuration production
 
       - name: Check build output
-        run: ls -la dist/
+        run: ls -la dist/app-name  # ✅ Verifica la estructura correcta
 
       - name: Zip artifact for deployment
         run: |
           cd dist
-          zip -r ../release.zip app-name
+          zip -r ../release.zip app-name  # ✅ Empaqueta la carpeta app-name
           cd ..
 
+      - name: Check contents of release.zip  # ✅ Asegura que el zip contiene los archivos esperados
+        run: unzip -l release.zip
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -56,7 +58,6 @@ jobs:
       id-token: write
       contents: read
 
-
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -66,6 +67,13 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip -d wwwroot
 
+      - name: Move files to correct location  # ✅ Mueve los archivos de app-name/ a wwwroot/
+        run: |
+          mv wwwroot/app-name/* wwwroot/
+          rm -rf wwwroot/app-name
+
+      - name: Check extracted files  # ✅ Verifica que los archivos están correctamente ubicados
+        run: ls -la wwwroot/
 
       - name: Login to Azure
         uses: azure/login@v2
