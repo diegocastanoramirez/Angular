@@ -34,10 +34,10 @@ jobs:
         run: ls -la dist/
 
       - name: Zip artifact for deployment
-run: |
-  cd dist
-  zip -r ../release.zip browser
-  cd ..
+        run: |
+          cd dist
+          zip -r ../release.zip browser
+          cd ..
 
 
       - name: Upload artifact for deployment job
@@ -55,6 +55,7 @@ run: |
     permissions:
       id-token: write
       contents: read
+
 
     steps:
       - name: Download artifact from build job
