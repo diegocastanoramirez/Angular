@@ -68,10 +68,11 @@ jobs:
       - name: Check downloaded ZIP contents
         run: unzip -l release.zip
 
+      - name: Ensure deployment directory exists
+        run: mkdir -p wwwroot
+
       - name: Unzip artifact for deployment
-        run: |
-          mkdir -p wwwroot
-          unzip release.zip -d wwwroot
+        run: unzip release.zip -d wwwroot
 
       - name: Verify extracted files
         run: ls -la wwwroot/app-name/browser
