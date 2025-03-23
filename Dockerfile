@@ -1,29 +1,27 @@
-# Utiliza una imagen base de Node.js
-FROM node:18-alpine as build
+# Usa Node.js como imagen base
+FROM node:18 AS build
 
 # Establece el directorio de trabajo
 WORKDIR /app
 
-# Copia los archivos de tu proyecto Angular
-COPY package*.json ./
+# Copia todos los archivos del proyecto
+COPY . . 
 
-# Instala las dependencias de tu aplicación Angular
-RUN npm install
+# Instala dependencias y construye la aplicación Angular
+RUN npm ci
+RUN npm run build --configuration=production
 
-# Copia el código fuente de la aplicación Angular
-COPY . .
-
-# Construye la aplicación Angular
-RUN npm run build --prod
-
-# Utiliza una imagen de Nginx para servir los archivos estáticos
+# Usa NGINX para servir la app
 FROM nginx:alpine
 
-# Copia los archivos de la compilación a la carpeta de Nginx
-COPY --from=build /app/dist/ /usr/share/nginx/html
+# Copia el archivo de configuración personalizado
+COPY nginx.conf /etc/nginx/conf.d/default.conf 
 
-# Expón el puerto 80
+# Copia la aplicación compilada
+COPY --from=build /app/dist/app-name/browser/ /usr/share/nginx/html/
+
+# Exponer el puerto 80
 EXPOSE 80
 
-# Inicia Nginx para servir la aplicación
+# Comando por defecto
 CMD ["nginx", "-g", "daemon off;"]
