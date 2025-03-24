@@ -16,7 +16,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist/app-name/browser/ /usr/share/nginx/html/
 
 # 🔹 Cambia el puerto a 80
-EXPOSE 80
+EXPOSE 8080
 
 # Comando por defecto
 CMD ["nginx", "-g", "daemon off;"]

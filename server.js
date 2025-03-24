@@ -17,7 +17,7 @@ app.get('*', (req, res) => {
 });
 
 // Definir el puerto (Azure proporciona uno dinámico)
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
