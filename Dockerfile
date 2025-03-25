@@ -1,4 +1,4 @@
-# Usa Node.js como imagen base para construir
+# Usa Node.js para construir Angular
 FROM node:18 AS build
 
 WORKDIR /app
@@ -15,8 +15,8 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copia la aplicación compilada
 COPY --from=build /app/dist/app-name/browser/ /usr/share/nginx/html/
 
-# 🔹 Cambia el puerto a 80
-EXPOSE 8080
+# Exponer el puerto correcto
+EXPOSE 80
 
 # Comando por defecto
 CMD ["nginx", "-g", "daemon off;"]
