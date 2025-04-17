@@ -1,32 +1,49 @@
 name: Angular CI/CD
 
-on:
-  push:
-    branches: [ "main" ]  # Cambié a "main" si esa es la rama principal
-  pull_request:
-    branches: [ "main" ]  # Cambié a "main" si esa es la rama principal
+trigger:
+  branches:
+    include:
+      - main  # Asegúrate de que tu rama principal sea "main"
+
+pr:
+  branches:
+    include:
+      - main  # Para los pull requests también
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  - job: build
+    displayName: 'Build and Deploy Angular App'
+    pool:
+      vmImage: 'ubuntu-latest'  # Cambia a 'windows-latest' si usas un agente Windows
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+    - task: Checkout@2  # Tarea de Azure DevOps para hacer checkout del código
 
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
+    - task: NodeTool@0  # Tarea de Azure DevOps para configurar Node.js
+      inputs:
+        versionSpec: '18.x'  # Versión de Node.js a instalar
 
-    - name: Install dependencies
-      run: npm install
+    - script: |
+        echo "Mostrando el contenido del directorio actual:"
+        pwd  # Muestra el directorio actual
+        echo "Mostrando el contenido del directorio:"
+        ls -la  # Lista los archivos en el directorio actual
+      displayName: 'Verificar el directorio actual y su contenido'
 
-    - name: Build Angular app
-      run: npm run build -- --configuration production
+    - script: |
+        npm install  # Instalar dependencias
+      displayName: 'Instalar dependencias'
 
-    - name: Archive production build
-      uses: actions/upload-artifact@v3
-      with:
-        name: dist
-        path: dist/projectAngular  # Verifica si esta ruta de salida es la correcta
+    - script: |
+        npm run build -- --configuration production  # Construir la aplicación
+      displayName: 'Construir aplicación Angular'
+
+    - task: PublishBuildArtifacts@1  # Publicar artefactos
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'  # Asegúrate de que esta ruta esté configurada
+        ArtifactName: 'dist'
+        publishLocation: 'Container'
+
+    - script: |
+        echo "Build completado y artefactos publicados"
+      displayName: 'Finalizar Pipeline'
